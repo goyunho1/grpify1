@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>groupify</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+
+<!-- 이미지 업로드 결과 표시 영역 -->
+<div id="imageTrackListContainer" class="trackListContainer"></div>
+
+<!-- 하단 고정 영역 -->
+<div class="upload-wrapper">
+    <div class="upload-container">
+        <div class="file-preview" id="filePreview">
+            <div class="text-search">
+                <input type="text" id="text-input" placeholder="트랙명 + 아티스트 입력 후 Enter" />
+                <div id="previewContainer"></div>
+            </div>
+        </div>
+
+        <label class="upload-label">
+            <div class="upload-icon">+</div>
+            <input type="file" id="fileInput" multiple>
+        </label>
+    </div>
+</div>
+
+<p id="status"></p>
+
+<script>
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+        console.error('인증 토큰이 없습니다. 로그인 페이지로 이동합니다.');
+        window.location.href = '/oauth2/authorization/spotify';
+    }
+
+    async function fetchWithAuth(url, options = {}) {
+        const headers = options.headers || {};
+        headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch(url, { ...options, headers });
+
+        if (response.status === 401) {
+            console.error('토큰 만료. 재로그인 필요');
+            localStorage.removeItem('accessToken');
+            window.location.href = '/oauth2/authorization/spotify';
+            throw new Error('Authentication failed');
+        }
+
+        if (response.redirected) {
+            window.location.href = response.url;
+            throw new Error('Redirected by server.');
+        }
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`API request failed: ${errorBody}`);
+        }
+
+        return response;
+    }
+
+    const textInput = document.getElementById("text-input");
+    const previewContainer = document.getElementById("previewContainer");
+
+    // ✅ 공통 UI 렌더링 함수
+    function renderTrackItem(track, index = null, removable = false, onRemove = null) {
+        const trackElement = document.createElement("div");
+        trackElement.classList.add("track-item");
+
+        const trackNumber = document.createElement("div");
+        trackNumber.classList.add("track-number");
+        trackNumber.textContent = index ?? "+";
+
+        const trackImg = document.createElement("img");
+        trackImg.src = track.cover;
+        trackImg.alt = track.title;
+
+        const infoDiv = document.createElement("div");
+        infoDiv.classList.add("track-info");
+
+        const title = document.createElement("div");
+        title.classList.add("track-title");
+        title.textContent = track.title;
+
+        const artists = document.createElement("div");
+        artists.classList.add("track-artists");
+        artists.textContent = track.artists.join(", ");
+
+        const playLink = document.createElement("a");
+        playLink.href = `https://open.spotify.com/track/${track.uri.replace("spotify:track:", "")}`;
+        playLink.target = "_blank";
+        playLink.innerHTML = "▶";
+        playLink.classList.add("play-button");
+
+        infoDiv.appendChild(title);
+        infoDiv.appendChild(artists);
+
+        trackElement.appendChild(trackNumber);
+        trackElement.appendChild(trackImg);
+        trackElement.appendChild(infoDiv);
+        trackElement.appendChild(playLink);
+
+        if (removable) {
+            const removeBtn = document.createElement("button");
+            removeBtn.classList.add("track-remove");
+            removeBtn.innerHTML = "×";
+            removeBtn.onclick = onRemove;
+            trackElement.appendChild(removeBtn);
+        }
+
+        return trackElement;
+    }
+
+    // 엔터 입력 시 검색
+    textInput.addEventListener("keydown", async (e) => {
+        if (e.key === "Enter" && textInput.value.trim() !== "") {
+            const q = textInput.value.trim();
+            const response = await fetchWithAuth(`/groupify/search?q=${q}`);
+            const track = await response.json();
+
+            if (!track || track.uri === "N/A") {
+                alert("검색 결과 없음");
+                return;
+            }
+
+            // 미리보기 생성
+            const preview = renderTrackItem(track);
+            preview.addEventListener("click", () => {
+                addTrackToList(track);
+                preview.remove();
+                textInput.value = "";
+            });
+
+            previewContainer.innerHTML = "";
+            previewContainer.appendChild(preview);
+        }
+    });
+
+    // trackListContainer에 추가
+    function addTrackToList(track) {
+        const index = document.querySelectorAll("#imageTrackListContainer .track-item").length + 1;
+        const trackElement = renderTrackItem(track, index);
+        document.getElementById("imageTrackListContainer").appendChild(trackElement);
+    }
+
+    function createPlaylistAndAddTracks(uris, name, description) {
+        fetchWithAuth(`/groupify/create-playlist`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description, uris })
+        })
+        .then(response => response.text())
+        .then(playlistId => {
+            const playlistUrl = `https://open.spotify.com/playlist/${playlistId}`;
+            document.getElementById("trackListContainer").innerHTML =
+                `<span style="color: green; font-weight: bold;">✅ 플레이리스트 생성 성공!</span><br>`;
+            window.open(playlistUrl, '_blank');
+        })
+        .catch(error => {
+            document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
+        });
+    }
+
+    // 이미지 업로드 처리
+    const fileInput = document.getElementById("fileInput");
+    const filePreview = document.getElementById("filePreview");
+    const totalImageUris = [];
+    const imageTrackListContainer = document.getElementById("imageTrackListContainer");
+    let trackCounter = 1;
+
+    fileInput.addEventListener("change", () => {
+        Array.from(fileInput.files).forEach(file => handleFile(file));
+    });
+
+    document.addEventListener("paste", (event) => {
+        for (let item of event.clipboardData.items) {
+            if (item.type.startsWith("image")) {
+                const file = item.getAsFile();
+                if (file) handleFile(file);
+            }
+        }
+    });
+
+    function handleFile(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const fileItem = document.createElement("div");
+            fileItem.classList.add("file-item");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("blur");
+
+            const spinner = document.createElement("div");
+            spinner.classList.add("spinner");
+
+            fileItem.appendChild(img);
+            fileItem.appendChild(spinner);
+
+            const removeBtn = document.createElement("button");
+            removeBtn.classList.add("remove-btn");
+            removeBtn.innerHTML = "×";
+            removeBtn.onclick = () => fileItem.remove();
+            fileItem.appendChild(removeBtn);
+
+            filePreview.appendChild(fileItem);
+            uploadImage(file, img, spinner);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function uploadImage(file, imgEl, spinnerEl) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetchWithAuth("/api/openai/process-image", {
+                method: "POST",
+                body: formData
+            });
+
+            const tracks = await response.json();
+            imgEl.classList.remove("blur");
+            spinnerEl.remove();
+
+            if (!tracks || tracks.length === 0) {
+                const noResult = document.createElement("div");
+                noResult.classList.add("track-item");
+                noResult.innerHTML = `<div class="track-number">-</div><div class="track-title">❌ 감지된 트랙 없음</div>`;
+                imageTrackListContainer.appendChild(noResult);
+                return;
+            }
+
+            tracks.forEach(track => {
+                totalImageUris.push(track.uri);
+
+                const trackElement = renderTrackItem(
+                    track,
+                    trackCounter++,
+                    true,
+                    () => {
+                        const idx = totalImageUris.indexOf(track.uri);
+                        if (idx !== -1) totalImageUris.splice(idx, 1);
+                        trackElement.remove();
+                    }
+                );
+
+                imageTrackListContainer.appendChild(trackElement);
+            });
+
+            if (!document.getElementById("imagePlaylistButton")) {
+                const button = document.createElement('button');
+                button.id = "imagePlaylistButton";
+                button.textContent = "SAVE AS PLAYLIST";
+                button.onclick = () => createPlaylistAndAddTracks(
+                    totalImageUris,
+                    "Playlist from image",
+                    "Generated by Groupify"
+                );
+                imageTrackListContainer.insertBefore(button, imageTrackListContainer.firstChild);
+            }
+        } catch (error) {
+            const errorBox = document.createElement("div");
+            errorBox.textContent = "❌ 업로드 실패: " + error;
+            imageTrackListContainer.appendChild(errorBox);
+        }
+    }
+</script>
+</body>
+</html>

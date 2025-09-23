@@ -1,0 +1,1485 @@
+2025-09-14T17:40:43.658+09:00  INFO 19260 --- [restartedMain] grpify.grpify.GrpifyApplication          : Starting GrpifyApplication using Java 21.0.3 with PID 19260 (C:\grpify-main\build\classes\java\main started by ∞Ì¿±»£ in C:\grpify-main)
+2025-09-14T17:40:43.666+09:00  INFO 19260 --- [restartedMain] grpify.grpify.GrpifyApplication          : No active profile set, falling back to 1 default profile: "default"
+2025-09-14T17:40:43.727+09:00  INFO 19260 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-09-14T17:40:43.727+09:00  INFO 19260 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-09-14T17:40:44.868+09:00  INFO 19260 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-14T17:40:45.108+09:00  INFO 19260 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 226 ms. Found 7 JPA repository interfaces.
+2025-09-14T17:40:46.139+09:00  INFO 19260 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-09-14T17:40:46.163+09:00  INFO 19260 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-09-14T17:40:46.163+09:00  INFO 19260 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-09-14T17:40:46.230+09:00  INFO 19260 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-09-14T17:40:46.230+09:00  INFO 19260 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2503 ms
+2025-09-14T17:40:46.425+09:00  INFO 19260 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-14T17:40:46.506+09:00  INFO 19260 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-09-14T17:40:46.554+09:00  INFO 19260 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-09-14T17:40:46.915+09:00  INFO 19260 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-14T17:40:46.953+09:00  INFO 19260 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-09-14T17:40:47.375+09:00  INFO 19260 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@38a47fe7
+2025-09-14T17:40:47.377+09:00  INFO 19260 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-09-14T17:40:47.482+09:00  INFO 19260 --- [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0.37
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-14T17:40:48.576+09:00  INFO 19260 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-14T17:40:48.746+09:00  INFO 19260 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-14T17:40:49.548+09:00  INFO 19260 --- [restartedMain] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-14T17:40:50.446+09:00  WARN 19260 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-14T17:40:50.481+09:00  INFO 19260 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2025-09-14T17:40:50.618+09:00  INFO 19260 --- [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-09-14T17:40:50.967+09:00  INFO 19260 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3306/groupify'
+2025-09-14T17:40:51.057+09:00  INFO 19260 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-09-14T17:40:51.102+09:00  INFO 19260 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-09-14T17:40:51.111+09:00  INFO 19260 --- [restartedMain] grpify.grpify.GrpifyApplication          : Started GrpifyApplication in 8.037 seconds (process running for 8.646)
+2025-09-14T17:40:51.171+09:00  INFO 19260 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-14T17:40:51.171+09:00  INFO 19260 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-09-14T17:40:51.171+09:00  INFO 19260 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-09-14T17:40:51.471+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : HTTP POST https://accounts.spotify.com/api/token
+2025-09-14T17:40:51.475+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2025-09-14T17:40:51.477+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Writing [{grant_type=[authorization_code], code=[AQDoQ_jdHEaBw38_hL39Wquo0eKTSgC0R5EGjOAvFyVuyloFoP9dDjHtyI04rEOrDT0iA4cDw6DySpZUnMxlVL-qfdGA9l0avn5Yv7Mx7Db7_92meBfcmsB8cLf3Sn5YicaEk7G8d5OZhL94VW_0PB2RsqdGEnngE2OIH9USAmmzBCcr1-roTZYKHQmQ9o-19Ak5_NSd7w8ljzWkU1Pb8BZbgjtd2-caZ8fRIvy3dDpNvzd9SHDQe3RM73uzGyosLerVwmuc5tu3PzmsgZT9LU1DzoYO-LufmFv345I78mlikq28lXjnalUlwAroShK1cVkMs4Fnrg], redirect_uri=[http://localhost:8080/login/oauth2/code/spotify]}] as "application/x-www-form-urlencoded;charset=UTF-8"
+2025-09-14T17:40:51.678+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2025-09-14T17:40:51.680+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Reading to [org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse] as "application/json;charset=utf-8"
+2025-09-14T17:40:51.718+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : HTTP GET https://api.spotify.com/v1/me
+2025-09-14T17:40:51.719+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2025-09-14T17:40:51.925+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Response 200 OK
+2025-09-14T17:40:51.925+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] o.s.web.client.RestTemplate              : Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2025-09-14T17:40:51.992+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    where
+        oa1_0.provider=? 
+        and oa1_0.provider_id=?
+2025-09-14T17:40:52.057+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* update
+        for grpify.grpify.OAuthAccount.domain.OAuthAccount */update oauth_account 
+    set
+        access_token=?,
+        provider=?,
+        provider_id=?,
+        refresh_token=?,
+        token_expiry=?,
+        user_id=? 
+    where
+        id=?
+2025-09-14T17:40:52.083+09:00  INFO 19260 --- [http-nio-8080-exec-3] grpify.grpify.auth.JwtTokenProvider      : Token generated. Issued at: Sun Sep 14 17:40:52 KST 2025, Expires at: Mon Sep 15 05:40:52 KST 2025
+2025-09-14T17:40:53.826+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:53.826+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:53.826+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:53.888+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:53.888+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:54.640+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:54.649+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:54.862+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:40:54.871+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.636+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.636+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.636+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.645+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.645+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.928+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:00.935+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:01.172+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:01.173+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:07.913+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:07.919+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.073+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.078+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.216+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.224+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.376+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.381+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.532+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.538+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.685+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:08.690+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.435+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.441+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.718+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.726+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.872+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:12.877+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.155+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.155+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.299+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.304+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.444+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.448+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.594+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.599+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.750+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.755+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.901+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:13.901+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.042+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.047+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.383+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.391+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.628+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.635+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.912+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:14.919+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:16.515+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:16.520+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:45.526+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:45.532+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:47.636+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:47.639+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:49.559+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:41:49.569+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:07.287+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:07.291+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:08.579+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:08.584+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:18.534+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:18.538+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:52.673+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:52.678+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:53.262+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:53.266+09:00 DEBUG 19260 --- [http-nio-8080-exec-1] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:53.739+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:53.741+09:00 DEBUG 19260 --- [http-nio-8080-exec-3] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:58.597+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:58.601+09:00 DEBUG 19260 --- [http-nio-8080-exec-4] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:59.655+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:42:59.655+09:00 DEBUG 19260 --- [http-nio-8080-exec-6] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:00.782+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:00.787+09:00 DEBUG 19260 --- [http-nio-8080-exec-7] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:07.118+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:07.133+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:07.136+09:00 DEBUG 19260 --- [http-nio-8080-exec-5] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:11.370+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:11.376+09:00 DEBUG 19260 --- [http-nio-8080-exec-2] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:13.025+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:13.028+09:00 DEBUG 19260 --- [http-nio-8080-exec-9] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:13.263+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:13.269+09:00 DEBUG 19260 --- [http-nio-8080-exec-8] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:15.659+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    select
+        u1_0.user_id,
+        u1_0.created_at,
+        u1_0.email,
+        u1_0.is_deleted,
+        u1_0.username,
+        u1_0.profile_img_url,
+        u1_0.role,
+        u1_0.updated_at 
+    from
+        users u1_0 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:15.662+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?
+2025-09-14T17:43:15.667+09:00 DEBUG 19260 --- [http-nio-8080-exec-10] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        oa1_0.id,
+        oa1_0.access_token,
+        oa1_0.provider,
+        oa1_0.provider_id,
+        oa1_0.refresh_token,
+        oa1_0.token_expiry,
+        oa1_0.user_id 
+    from
+        oauth_account oa1_0 
+    left join
+        users u1_0 
+            on u1_0.user_id=oa1_0.user_id 
+    where
+        u1_0.user_id=?

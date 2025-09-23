@@ -1,0 +1,252 @@
+/* styles.css */
+
+.header {
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.title {
+  font-size: 3rem;
+  margin: 0.5rem 0;
+  font-weight: 800;
+  color: #fff;
+}
+
+.time {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.card {
+  background: linear-gradient(135deg, rgba(36, 8, 55, 0.8), rgba(0, 0, 0, 0.6));
+  border-radius: 10px;
+  height: 380px;
+  padding: 0px;
+  width: 230px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.card-subtitle {
+  font-size: 20px;
+  text-align: center;
+}
+
+.card-track-wrapper {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  align-items: flex-start;
+  gap: 40px;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex-shrink: 0;
+  items-align: center; /* 🔥 이거 다시 넣어주기 */
+}
+
+.trackListContainer {
+  flex: 1;
+  padding-bottom: 112px;
+  max-width: 500px;
+}
+
+.card-content.vertical {
+  flex-direction: column;
+  text-align: center;
+  
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0px;
+}
+
+.card-time {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.artist-image, .track-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  align-items: center
+}
+
+/* 사용자 프로필 */
+.profile-container {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.profile-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+
+
+
+
+
+
+.track-item {
+
+    width: 350px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    background-color: #121212; /* 배경색 */
+    position: relative; /* 트랙 아이템 영역을 기준으로 자식 요소들 배치 */
+    padding-left: 40px; /* 트랙 번호와 이미지가 겹치지 않도록 왼쪽 패딩 추가 */
+}
+
+.track-number {
+    font-size: 14px;
+    color: gray;
+    background-color: #121212; /* 배경색 */
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* 트랙 번호를 절대 위치로 배치 */
+    left: 0; /* 트랙 번호를 왼쪽에 고정 */
+    visibility: visible; /* 기본적으로 보이도록 설정 */
+    transition: visibility 0.3s ease, opacity 0.3s ease; /* 부드러운 트랜지션 */
+}
+
+.track-item:hover .track-number {
+    visibility: hidden; /* 마우스 hover 시 트랙 번호 숨기기 */
+    opacity: 0;
+}
+
+.play-button {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 5px;
+    background-color: #121212; /* 배경색 */
+    border-radius: 5px;
+    position: absolute; /* 절대 위치 */
+    left: 7px; /* 트랙 번호와 동일한 위치 */
+    visibility: hidden; /* 기본적으로 숨기기 */
+    opacity: 0;
+    transition: visibility 0.3s ease, opacity 0.3s ease; /* 부드러운 트랜지션 */
+}
+
+.track-item:hover .play-button {
+    visibility: visible; /* 마우스 hover 시 플레이 버튼 보이기 */
+    opacity: 1;
+}
+
+.track-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.track-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.track-title {
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+}
+
+.track-artists {
+    font-size: 12px;
+    color: gray;
+}
+
+#trackListContainer {
+  height: 792px; /* 세로 고정 높이 */
+  overflow-y: scroll;          /* 내부 세로 스크롤 */
+  overflow-x: hidden;          /* 좌우 스크롤 제거 */
+  padding-right: 0px; /* 스크롤 여백 */
+  scrollbar-width: none;       /* Firefox용 스크롤 숨기기 */
+  -ms-overflow-style: none;    /* IE/Edge용 스크롤 숨기기 */
+  border-radius: 10px;
+  padding: 0px;
+  color:  #121212;
+  transition: background 0.3s ease;
+}
+
+/* Webkit 기반 브라우저(Chrome, Safari)용 스크롤 숨기기 */
+#trackListContainer::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+
+
+
+.range-wrapper {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.time-range-selector, .limit-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrow {
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+.range-text {
+  font-weight: bold;
+  font-size: 16px;
+  padding: 4px 10px;
+}

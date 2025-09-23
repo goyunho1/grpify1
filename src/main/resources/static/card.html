@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script src="https://unpkg.com/node-vibrant@3.1.6/dist/vibrant.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Recap</title>
+  <link rel="stylesheet" type="text/css" href="/css/card.css">
+</head>
+<body>
+  <div class="profile-container">
+    <img alt="User Profile" class="profile-image" />
+    <span class="profile-name">사용자 이름</span>
+  </div>
+
+  <!-- 상단 텍스트 -->
+  <div class="header">
+    
+    <div class="range-wrapper">
+      <div class="time-range-selector">
+        <span class="arrow" id="prev-range">〈</span>
+        <span id="time_range" class="range-text" data-value="medium_term">last 6 months</span>
+        <span class="arrow" id="next-range">〉</span>
+      </div>
+  
+      <div class="limit-selector">
+        <span class="arrow" id="decrease-limit">−</span>
+        <span id="limit" class="range-text" data-value="10">10</span>
+        <span class="arrow" id="increase-limit">＋</span>
+      </div>
+    </div>
+  
+    <p class="time">3,699곡</p>
+  </div>
+
+<div class="card-track-wrapper">
+  <div class="content-container">
+    <!-- 아티스트 카드 -->
+    <div class="card" data-type="artists">
+      <p class="card-subtitle">가장 많이 들은 아티스트</p>
+      <div class="card-content vertical">
+        <img alt="고고학" class="artist-image" />
+        <p class="card-title">아티스트</p>
+      </div>
+    </div>
+
+    <!-- 트랙 카드 -->
+    <div class="card" data-type="tracks">
+      <p class="card-subtitle">가장 많이 들은 노래</p>
+      <div class="card-content vertical">
+        <img alt="우물" class="track-image" />
+        <p class="card-title">제목 · 아티스트 </p>
+      </div>
+    </div>
+  </div>
+  <div id="trackListContainer-wrapper">
+   <div id="trackListContainer"></div>
+   <button id="savePlaylistBtn" style="display: none;">SAVE AS PLAYLIST</button>
+  </div>
+</div>
+
+
+
+  <script>
+    const token = localStorage.getItem('access_token');
+
+     // 토큰이 없으면 즉시 로그인 페이지로 보냄
+     if (!token) {
+         console.error('인증 토큰이 없습니다. 로그인 페이지로 이동합니다.');
+         window.location.href = '/oauth2/authorization/spotify';
+     }
+
+
+     async function fetchWithAuth(url, options = {}) {
+
+         // 3. 기존 옵션에 헤더 정보를 추가하거나 생성합니다.
+         const headers = options.headers || {};
+         // 'Authorization' 헤더에 'Bearer ' 접두사와 함께 토큰을 추가합니다.
+         headers['Authorization'] = `Bearer ${token}`;
+         // Content-Type은 POST/PUT 요청 시 options에서 전달되므로 여기서 기본 설정하지 않습니다.
+
+         // 4. 수정된 옵션으로 실제 fetch를 호출합니다.
+         const response = await fetch(url, { ...options, headers });
+
+         // 5. 응답 상태 코드를 확인하여 에러를 처리합니다.
+         if (response.status === 401) { // 401 Unauthorized (토큰 만료 또는 무효)
+             console.error('인증 토큰이 만료되었거나 유효하지 않습니다. 재로그인이 필요합니다.');
+             localStorage.removeItem('accessToken'); // 만료된 토큰은 제거
+             window.location.href = '/oauth2/authorization/spotify'; // 다시 로그인하도록 유도
+             throw new Error('Authentication failed: Token is invalid or expired.');
+         }
+
+         // 302 리디렉션 응답을 받은 경우 (Spring Security가 로그인 페이지로 보낼 때)
+         if (response.redirected) {
+             console.error('서버에서 리디렉션을 감지했습니다. 로그인 페이지로 이동합니다.');
+             window.location.href = response.url; // 서버가 지시한 URL로 이동
+             throw new Error('Redirected by server.');
+         }
+
+         // 4xx, 5xx 에러 등 다른 모든 HTTP 에러 처리
+         if (!response.ok) {
+             const errorBody = await response.text();
+             console.error('API 요청 실패:', errorBody);
+             throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+         }
+
+         // 6. 모든 검사를 통과하면, 성공적인 Response 객체를 반환합니다.
+         return response;
+     }
+     //type 설정
+     let type = "tracks";
+
+     //time_range 설정
+     const ranges = [
+       { label: "last 4 weeks", value: "short_term" },
+       { label: "last 6 months", value: "medium_term" },
+       { label: "last year", value: "long_term" }
+     ];
+     let currentRangeIndex = 1;
+
+     const timeRangeElem = document.getElementById("time_range");
+     const prevRangeBtn = document.getElementById("prev-range");
+     const nextRangeBtn = document.getElementById("next-range");
+
+     function updateTimeRange(index) {
+       currentRangeIndex = index;
+       timeRangeElem.textContent = ranges[index].label;
+       timeRangeElem.dataset.value = ranges[index].value;
+
+       getUsersTopItems(type);
+     }
+     prevRangeBtn.onclick = () => updateTimeRange((currentRangeIndex - 1 + ranges.length) % ranges.length);
+     nextRangeBtn.onclick = () => updateTimeRange((currentRangeIndex + 1) % ranges.length);
+
+     //limit 설정
+     const limitElem = document.getElementById("limit");
+     const decreaseBtn = document.getElementById("decrease-limit");
+     const increaseBtn = document.getElementById("increase-limit");
+
+     function updateLimit(change) {
+       let current = parseInt(limitElem.dataset.value, 10);
+       const updated = Math.min(50, Math.max(1, current + change));
+       if (updated !== current) {
+         limitElem.textContent = updated;
+         limitElem.dataset.value = updated;
+
+         getUsersTopItems(type);
+       }
+     }
+     decreaseBtn.onclick = () => updateLimit(-1);
+     increaseBtn.onclick = () => updateLimit(1);
+
+
+
+     getUsersTopItems("tracks");
+     getUsersTopItems("artists");
+
+     const trackImg = document.querySelector(".track-image");
+     const artistImg = document.querySelector(".artist-image");
+     const profileImg = document.querySelector(".profile-image");
+     const profileName = document.querySelector(".profile-name");
+
+     getUsersProfile()
+
+     trackImg.crossOrigin = "Anonymous";
+     artistImg.crossOrigin = "Anonymous";
+
+     let mutedColorA = null;
+     let mutedColorT = null;
+
+     // 배경색 적용 함수
+     function trySetBodyBackground() {
+       if (mutedColorA && mutedColorT) {
+         document.body.style.background = `linear-gradient(180deg, ${mutedColorA}, ${mutedColorT})`;
+       }
+     }
+
+     function applyVibrantColor(imgElement, cardIndex, setColorCallback) {
+       const applyPalette = () => {
+           Vibrant.from(imgElement).getPalette().then(palette => {
+               const mutedColor = palette.Muted?.hex || '#555';
+               document.querySelectorAll('.card')[cardIndex].style.background = mutedColor;
+               setColorCallback(mutedColor);
+               trySetBodyBackground();
+           });
+       };
+
+       if (imgElement.complete) {
+           applyPalette();
+       } else {
+           imgElement.onload = applyPalette;
+       }
+     }
+
+     function getUsersProfile(){
+       fetchWithAuth(`/groupify/user-profile`, {
+           method: "GET",
+           headers: {
+         "Authorization": "Bearer " + token,
+         "Content-Type": "application/json"
+     }
+       })
+       .then(response => response.json())
+       .then(user => {
+         profileImg.src = user.image;
+         profileName.textContent = user.display_name;
+       })
+     }
+
+     document.querySelectorAll(".card").forEach(card => {
+         card.addEventListener("click", () => {
+             type = card.getAttribute("data-type");
+             getUsersTopItems(type);
+         })
+     });
+
+     document.getElementById("time_range").addEventListener("change", getUsersTopItems(type));
+     document.getElementById("limit").addEventListener("change", getUsersTopItems(type));
+     document.getElementById("limit").addEventListener("keydown", function(event) {
+         if (event.key === "Enter") {
+             event.preventDefault(); // 기본 동작(폼 제출) 방지
+             getUsersTopItems(type);
+         }
+     });
+
+     function getUsersTopItems(type) {
+       const time_range = document.getElementById("time_range").dataset.value;
+       const limit = document.getElementById("limit").dataset.value;
+
+       fetchWithAuth(`/groupify/top-${type}?time_range=${time_range}&limit=${limit}`, {
+           method: "GET",
+           headers: {
+         "Authorization": "Bearer " + token,
+         "Content-Type": "application/json"
+     }
+       })
+       .then(response => response.json())
+       .then(items => {
+         const trackListContainer = document.getElementById("trackListContainer");
+         trackListContainer.innerHTML = ""; // 기존 리스트 초기화
+         const trackListContainer_wrapper = document.getElementById("trackListContainer-wrapper");
+
+         if (items.length === 0) {
+             trackListContainer.innerHTML = "<p>❌ 조회된 데이터가 없습니다.</p>";
+             return;
+         }
+
+         const uris = [];
+
+           items.forEach((item, index) => {
+                 if (type === "artists") {
+                     const artistElement = document.createElement('div');
+                     artistElement.classList.add('track-item'); // 트랙과 동일한 스타일 적용
+
+                     const trackNumber = document.createElement('div');
+                     trackNumber.classList.add('track-number');
+                     trackNumber.textContent = index + 1;
+                     trackNumber.style.marginRight = "10px";
+
+                     const img = document.createElement('img');
+                     img.src = item.image;
+                     img.alt = item.name;
+                     img.classList.add("track-img");
+
+                     if (index == 0){
+                       artistImg.src = item.image;
+                       document.querySelectorAll(".card")[0].querySelector(".card-title").textContent = item.name;
+                       applyVibrantColor(artistImg, 0, (color) => mutedColorA = color);
+                     }
+
+                     const infoDiv = document.createElement('div');
+                     infoDiv.classList.add('track-info');
+
+                     const name = document.createElement('div');
+                     name.classList.add('track-title');
+                     name.textContent = item.name;
+
+                     const genres = document.createElement('div');
+                     genres.classList.add('track-artists');
+                     genres.textContent = item.genres.join(", "); // 아티스트의 장르 표시
+
+                     const playLink = document.createElement('a');
+                     playLink.href = item.url; // Spotify 아티스트 페이지로 이동
+                     playLink.target = "_blank";
+                     playLink.innerHTML = "▶";
+                     playLink.classList.add('play-button');
+
+                     infoDiv.appendChild(name);
+                     infoDiv.appendChild(genres);
+
+                     artistElement.appendChild(trackNumber);
+                     artistElement.appendChild(img);
+                     artistElement.appendChild(infoDiv);
+                     artistElement.appendChild(playLink);
+
+                     trackListContainer.appendChild(artistElement);
+                 }
+                 else { //tracks
+                     uris.push(item.uri);
+
+                     const trackElement = document.createElement('div');
+                     trackElement.classList.add('track-item');
+
+                     const trackNumber = document.createElement('div');
+                     trackNumber.classList.add('track-number');
+                     trackNumber.textContent = index + 1;
+                     trackNumber.style.marginRight = "10px";
+
+
+                     const img = document.createElement('img');
+                     img.src = item.cover;
+                     img.alt = item.title;
+
+                     if (index == 0){
+                       trackImg.src = item.cover;
+                       document.querySelectorAll(".card")[1].querySelector(".card-title").textContent = `${items[0].title} · ${items[0].artists.join(", ")}`;
+                       applyVibrantColor(trackImg, 1, (color) => mutedColorT = color);
+                     }
+
+                     const infoDiv = document.createElement('div');
+                     infoDiv.classList.add('track-info');
+
+                     const title = document.createElement('div');
+                     title.classList.add('track-title');
+                     title.textContent = item.title;
+
+                     const artists = document.createElement('div');
+                     artists.classList.add('track-artists');
+                     artists.textContent = item.artists.join(", ");
+
+                     const playLink = document.createElement('a');
+                     playLink.href = `https://open.spotify.com/track/${item.uri.replace("spotify:track:", "")}`;
+                     playLink.target = "_blank";
+                     playLink.innerHTML = "▶";
+                     playLink.classList.add('play-button');
+
+                     infoDiv.appendChild(title);
+                     infoDiv.appendChild(artists);
+
+                     trackElement.appendChild(trackNumber);
+                     trackElement.appendChild(img);
+                     trackElement.appendChild(infoDiv);
+                     trackElement.appendChild(playLink);
+
+                     trackListContainer.appendChild(trackElement);
+                 }
+             });
+
+             // 플레이리스트 생성 버튼 추가
+             if (type !== "artists" && uris.length > 0) {
+                 document.getElementById("savePlaylistBtn").style.display = "block";
+                 const playlistName = {
+                     "short_term": "Last 4 weeks",
+                     "medium_term": "Last 6 months",
+                     "long_term": "Last year"
+                 }[time_range];
+
+                 document.getElementById("savePlaylistBtn").onclick = () => createPlaylistAndAddTracks(
+                     uris,
+                     `${playlistName} top tracks (from ${new Date().toLocaleDateString()})`,
+                     "Generated by Groupify"
+                 );
+
+             }
+             else {
+               document.getElementById("savePlaylistBtn").style.display = "none";
+            }
+         })
+         .catch(error => {
+             document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
+         });
+     }
+
+
+
+
+        function createPlaylistAndAddTracks(uris, name, description) {
+            fetchWithAuth(`/groupify/create-playlist`, {
+                method: "POST",
+                headers: {
+                "Authorization": "Bearer " + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, description, uris })  // JSON 객체로 전달
+            })
+            .then(response => response.text())  // 플레이리스트 ID 응답 받기
+            .then(playlistId => {
+                const playlistUrl = `https://open.spotify.com/playlist/${playlistId}`;
+                const newWindow = window.open(playlistUrl, '_blank');
+                newWindow.location.href = playlistUrl;
+            })
+            .catch(error => {
+                document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
+            });
+        }
+    </script>
+  
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Login</title>
+</head>
+<body>
+    <h2>Spotify 로그인</h2>
+    <button onclick="loginSpotify()">Login with Spotify</button>
+
+    <script>
+        function loginSpotify() {
+            window.location.href = "/oauth2/authorization/spotify";
+        }
+    </script>
+</body>
+</html>
