@@ -26,6 +26,7 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     Set<Long> findLikedComments( // Set.contains 가 List.contains 보다 이득
                                  @Param("userId") Long userId,
                                  @Param("commentIds") List<Long> commentIds);
+
     Page<PostLike> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
     boolean existsByUser_IdAndPost(Long userId, Post post);

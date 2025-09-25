@@ -7,10 +7,12 @@ import grpify.grpify.PostLike.repository.PostLikeRepository;
 import grpify.grpify.board.domain.Board;
 import grpify.grpify.board.dto.BoardResponse;
 import grpify.grpify.board.repository.BoardRepository;
+import grpify.grpify.board.service.BoardService;
 import grpify.grpify.comment.domain.Comment;
 import grpify.grpify.comment.repository.CommentRepository;
+import grpify.grpify.comment.service.CommentService;
 import grpify.grpify.commentLike.domain.CommentLike;
-import grpify.grpify.commentLike.dto.LikeResponse;
+import grpify.grpify.PostLike.dto.LikeResponse;
 import grpify.grpify.common.exception.NotFoundException;
 import grpify.grpify.post.domain.Post;
 import grpify.grpify.post.dto.PostRequest;
@@ -20,6 +22,7 @@ import grpify.grpify.user.domain.User;
 import grpify.grpify.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Comments;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,28 +38,25 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final BoardRepository boardRepository; // 서비스로 수정
-    private final PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository; //postLikeService 따로 구현 않고 postservice 에서 직접 사용
     private final UserService userService;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
+    private final BoardService boardService;
 
     public Post findById(Long postId) {
-
         return postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
     }
+
     public Page<PostResponse> findByBoard(Long boardId, Pageable pageable) {
+        Board board = boardService.findById(boardId);
 
-        Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
-                .orElseThrow(() -> new NotFoundException("게시판을 찾을 수 없습니다. ID: " + boardId));
-
-        return postRepository.findByBoardAndDeletedFalse(board, pageable)
+        return postRepository.findByBoardAndIsDeletedFalse(board, pageable)
                 .map(PostResponse::from);
     }
 
     public PostResponse read(Long postId, Long currentUserId) {
         Post post = findById(postId);
-
         boolean isLiked = false;
 
         if (currentUserId != null) {
@@ -79,18 +79,19 @@ public class PostService {
 
     @Transactional
     public Long write(PostRequest request, User author) {
+        
+        // 게시판 존재 여부 확인
+        Board board = boardService.findById(request.getBoardId());
 
         Post newPost = Post.builder()
                         .title(request.getTitle())
                         .content(request.getContent())
-                        .author((author))
+                        .board(board)
+                        .author(author)
                         .build();
 
         postRepository.save(newPost);
 
-        // 작성 시간, 수정 시간 은 postRepository.save(newPost) 호출시 채워짐
-        // generatedVaule 와 헷갈리지 않기 << insert 이후
-//      return PostResponse.from(newPost);
         return newPost.getId();
     }
 
@@ -112,13 +113,19 @@ public class PostService {
     @Transactional
     public void softDelete(Long postId) {
         Post post = findById(postId);
-        // 하위 요소부터 처리, 벌크 연산부터 처리하는게 일관성 유지하기 쉬움.
-        commentRepository.bulkSoftDeleteByPostId(postId);
+
+        // 하위 요소부터 처리
+        commentService.bulkSoftDeleteByPostId(postId);
 
         post.softDelete();
     }
 //      메서드 연쇄적으로 재사용 하고 싶지만 (board - post - comment),
 //      N+1 문제 막기 위해 벌크 업데이트
+
+    @Transactional
+    public void bulkSoftDeleteByBoardId(Long boardId) {
+        postRepository.bulkSoftDeleteByBoardId(boardId);
+    }
 
     @Transactional
     public void incrementCommentCount(Long postId) {

@@ -5,6 +5,7 @@ import grpify.grpify.board.dto.BoardRequest;
 import grpify.grpify.board.dto.BoardResponse;
 import grpify.grpify.board.repository.BoardRepository;
 import grpify.grpify.comment.repository.CommentRepository;
+import grpify.grpify.comment.service.CommentService;
 import grpify.grpify.common.exception.NotFoundException;
 import grpify.grpify.common.exception.DuplicateException;
 import grpify.grpify.post.domain.Post;
@@ -22,8 +23,9 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
+//    private final PostRepository postRepository;
+    private final PostService postService;
+    private final CommentService commentService;
 
     // 반환 타입 고민해보기
     @Transactional
@@ -43,13 +45,11 @@ public class BoardService {
 
     @Transactional
     public void softDelete(Long boardId) {
-
         Board board = findById(boardId);
 
-        // 하위 요소부터 처리, 벌크 연산부터 처리하는게 일관성 유지하기 쉬움.
-        commentRepository.bulkSoftDeleteByBoardId(boardId);
-
-        postRepository.bulkSoftDeleteByBoardId(boardId);
+        // 하위 요소부터 처리
+        commentService.bulkSoftDeleteByBoardId(boardId);
+        postService.bulkSoftDeleteByBoardId(boardId);
 
         board.softDelete();
     }

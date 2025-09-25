@@ -166,13 +166,40 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             """)
     void bulkSoftDeleteByPostId(@Param("postId") Long postId);
 
+
+
+    //1
     @Modifying(clearAutomatically = true)
     @Query(value = """
             UPDATE Comment c
             SET c.isDeleted = true
             WHERE c.post.board.id = :boardId
             """)
-    void bulkSoftDeleteByBoardId(@Param("boardId") Long boardId);
+    void bulkSoftDeleteByBoardIdJpql(@Param("boardId") Long boardId);
+
+    //2
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            UPDATE comment c
+            INNER JOIN post p ON c.post_id = p.post_id
+            SET c.is_deleted = 1, c.updated_at = NOW()
+            WHERE p.board_id = :boardId
+            AND c.is_deleted = 0
+            """, nativeQuery = true)
+    void bulkSoftDeleteByBoardIdNative(@Param("boardId") Long boardId);
+
+    //+batch
+    @Modifying(clearAutomatically = true)
+    @Query(value = """
+            UPDATE comment c
+            INNER JOIN post p ON c.post_id = p.post_id
+            SET c.is_deleted = 1, c.updated_at = NOW()
+            WHERE p.board_id = :boardId 
+            AND c.is_deleted = 0
+            LIMIT :batchSize
+            """, nativeQuery = true)
+    int bulkSoftDeleteByBoardIdBatch(@Param("boardId") Long boardId,
+                                     @Param("batchSize") int batchSize);
 }
 
 

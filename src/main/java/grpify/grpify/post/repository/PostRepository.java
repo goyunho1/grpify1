@@ -2,6 +2,7 @@ package grpify.grpify.post.repository;
 
 import grpify.grpify.board.domain.Board;
 import grpify.grpify.post.domain.Post;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,15 +33,31 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndIsDeletedFalse(Long id);
 
     @Modifying(clearAutomatically = true)
+    @Query("""
+            UPDATE Post p
+            SET p.isDeleted = true, p.updatedAt = CURRENT_TIMESTAMP
+            WHERE p.board.id = :boardId
+            AND p.isDeleted = false
+            """)
+    void bulkSoftDeleteByBoardIdJpql(@Param("boardId") Long boardId);
+
+    @Modifying(clearAutomatically = true)
     @Query(value = """
             UPDATE Post p
-            SET p.isDeleted = true
-            WHERE p.board.id = :boardId
-            """)
-    void bulkSoftDeleteByBoardId(@Param("boardId") Long boardId);
+            SET is_deleted = 1, updated_at = NOW()
+            WHERE board_id = :boardId
+            AND is_deleted = 0
+            """, nativeQuery = true)
+    void bulkSoftDeleteByBoardIdNative(@Param("boardId") Long boardId);
+
+
 
     @Modifying
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     void incrementViewCount(@Param("postId") Long postId);
+
+    Page<Post> findByBoardAndIsDeletedFalse(Board board, Pageable pageable);
+
+    void bulkSoftDeleteByBoardId(Long boardId);
 }
 

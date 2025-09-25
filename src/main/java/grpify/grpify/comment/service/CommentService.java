@@ -134,7 +134,7 @@ public class CommentService {
         //권한 확인 필요
 
         comment.softDelete();
-        postService.incrementCommentCount(comment.getPost().getId());
+        postService.decrementCommentCount(comment.getPost().getId());
     }
 
 
@@ -187,5 +187,23 @@ public class CommentService {
 
         return commentRepository.findByIdAndIsDeletedFalse(commentId)
                 .orElseThrow(() -> new NotFoundException("댓글을 찾을 수 없습니다. ID: " + commentId));
+    }
+
+    /**
+     * 게시판 삭제 시 해당 게시판의 모든 댓글을 일괄 소프트 삭제합니다.
+     * @param boardId 삭제할 게시판의 ID
+     */
+    @Transactional
+    public void bulkSoftDeleteByBoardId(Long boardId) {
+        commentRepository.bulkSoftDeleteByBoardId(boardId);
+    }
+
+    /**
+     * 게시글 삭제 시 해당 게시글의 모든 댓글을 일괄 소프트 삭제합니다.
+     * @param postId 삭제할 게시글의 ID
+     */
+    @Transactional
+    public void bulkSoftDeleteByPostId(Long postId) {
+        commentRepository.bulkSoftDeleteByPostId(postId);
     }
 }
