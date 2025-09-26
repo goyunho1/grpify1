@@ -2,6 +2,7 @@ package grpify.grpify.post.controller;
 
 import grpify.grpify.auth.CustomUserDetails;
 import grpify.grpify.PostLike.dto.LikeResponse;
+import grpify.grpify.board.service.BoardService;
 import grpify.grpify.post.dto.PostRequest;
 import grpify.grpify.post.dto.PostResponse;
 import grpify.grpify.post.service.PostService;
@@ -21,10 +22,11 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/posts")
+@RequestMapping("/api/boards/{boardId}/posts")
 public class PostController {
 
     private final PostService postService;
+    private final BoardService boardService;
 
     // 좋아요 요청 DTO를 record로 간결하게 정의
     public record LikeRequest(boolean like) {}
@@ -35,9 +37,11 @@ public class PostController {
      */
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPostsByBoard(
-            @RequestParam Long boardId,
+            @PathVariable Long boardId,
             @PageableDefault(size = 20, sort = "createdAt") Pageable pageable) {
-        
+
+//        boardService.findById(boardId); //postService.findByBoard 에서 검사
+
         Page<PostResponse> posts = postService.findByBoard(boardId, pageable);
         return ResponseEntity.ok(posts);
     }
@@ -53,12 +57,12 @@ public class PostController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         
         Long currentUserId = (userDetails != null) ? userDetails.getUser().getId() : null;
-        
-        // 조회수 증가 (별도 트랜잭션)
-        postService.incrementViewCount(postId);
-        
+
         // 게시글 조회 (좋아요 여부 포함)
         PostResponse post = postService.read(postId, currentUserId);
+        // 조회수 증가 (별도 트랜잭션)
+        postService.incrementViewCount(postId);
+
         return ResponseEntity.ok(post);
     }
 
@@ -68,15 +72,20 @@ public class PostController {
      */
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Long> createPost(
-            @Valid @RequestBody PostRequest request,
+    public ResponseEntity<PostResponse> createPost(
+            @PathVariable Long boardId,
+            @Valid @RequestBody PostRequest request, // boardId 제외된 DTO
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        User author = userDetails.getUser();
-        Long newPostId = postService.write(request, author);
+//        boardService.findById(boardId);
 
-        URI location = URI.create("/api/posts/" + newPostId);
-        return ResponseEntity.created(location).body(newPostId);
+        User author = userDetails.getUser();
+        Long newPostId = postService.write(request, boardId, author);
+
+        PostResponse post = postService.read(newPostId, author.getId());
+        URI location = URI.create("/api/boards/" + boardId + "/posts/" + newPostId);
+
+        return ResponseEntity.created(location).body(post);
     }
 
     /**

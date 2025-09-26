@@ -21,8 +21,10 @@ import grpify.grpify.post.repository.PostRepository;
 import grpify.grpify.user.domain.User;
 import grpify.grpify.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comments;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -64,7 +66,7 @@ public class PostService {
         }
 
         // post.incrementViewCount()
-        // read only 불가능, write 작업 분리! <<<<
+        // 트랜잭션 길어짐, write 작업 분리! <<<<
 
         return PostResponse.from(post,isLiked);
         // read 메서드 외에는 isLiked 사용 안함
@@ -78,10 +80,10 @@ public class PostService {
     }
 
     @Transactional
-    public Long write(PostRequest request, User author) {
+    public Long write(PostRequest request, Long boardId, User author) {
         
         // 게시판 존재 여부 확인
-        Board board = boardService.findById(request.getBoardId());
+        Board board = boardService.findById(boardId);
 
         Post newPost = Post.builder()
                         .title(request.getTitle())
@@ -181,5 +183,60 @@ public class PostService {
                 .likeCount(post.getLikeCount())
                 .isLiked(shouldBeLiked)
                 .build();
+    }
+
+    // ==== 테스트용 조회수 증가 메서드들 ====
+    
+    // Case 1: 엔티티 방식 (SELECT → 메모리 증가 → UPDATE)
+    @Transactional
+    public void incrementViewCountEntity(Long postId) {
+        Post post = postRepository.findById(postId).get(); // SELECT
+        post.incrementViewCount();                          // 메모리 증가
+        postRepository.save(post);                          // UPDATE
+    }
+
+    // Case 2: 벌크 업데이트 방식 (단일 UPDATE 쿼리) - 이미 구현되어 있음
+    // incrementViewCount() 메서드가 이미 벌크 업데이트 방식
+
+    // Case 3: 비관적 락 방식 (Pessimistic Lock)
+    @Transactional
+    public void incrementViewCountPessimistic(Long postId) {
+        // SELECT ... FOR UPDATE로 Row Lock 즉시 획득
+        Post post = postRepository.findByIdWithPessimisticLock(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+        post.incrementViewCount();
+        postRepository.save(post);
+        // 트랜잭션 종료 시 락 해제
+    }
+
+    // Case 4: 낙관적 락 방식 (Optimistic Lock)
+    @Transactional
+    public void incrementViewCountOptimistic(Long postId) {
+        int maxRetries = 5;
+        int attempt = 0;
+        
+        while (attempt < maxRetries) {
+            try {
+                Post post = postRepository.findById(postId)
+                        .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+                post.incrementViewCount();
+                postRepository.save(post); // Version 체크 후 UPDATE
+                return; // 성공 시 종료
+                
+            } catch (OptimisticLockingFailureException e) {
+                attempt++;
+                if (attempt >= maxRetries) {
+                    throw new RuntimeException("조회수 증가 실패: 최대 재시도 초과");
+                }
+                
+                // 지수 백오프로 재시도 간격 조정
+                try {
+                    Thread.sleep(50 + (20 * attempt)); 
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("재시도 중 인터럽트 발생");
+                }
+            }
+        }
     }
 }

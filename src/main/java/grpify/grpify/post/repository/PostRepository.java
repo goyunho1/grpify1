@@ -2,10 +2,12 @@ package grpify.grpify.post.repository;
 
 import grpify.grpify.board.domain.Board;
 import grpify.grpify.post.domain.Post;
+import jakarta.persistence.LockModeType;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,7 +53,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     void bulkSoftDeleteByBoardIdNative(@Param("boardId") Long boardId);
 
 
-
+    // 추후에 배치 처리로 변경 고려
     @Modifying
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     void incrementViewCount(@Param("postId") Long postId);
@@ -59,5 +61,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findByBoardAndIsDeletedFalse(Board board, Pageable pageable);
 
     void bulkSoftDeleteByBoardId(Long boardId);
+
+    // 비관적 락을 위한 메서드
+    @Query("SELECT p FROM Post p WHERE p.id = :postId")
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Post> findByIdWithPessimisticLock(@Param("postId") Long postId);
 }
 

@@ -195,7 +195,8 @@ public class CommentService {
      */
     @Transactional
     public void bulkSoftDeleteByBoardId(Long boardId) {
-        commentRepository.bulkSoftDeleteByBoardId(boardId);
+        commentRepository.bulkSoftDeleteByBoardIdJpql(boardId); //<<<<<test 후 결정
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     }
 
     /**

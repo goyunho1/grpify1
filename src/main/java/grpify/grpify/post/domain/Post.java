@@ -42,6 +42,9 @@ public class Post extends BaseTimeEntity {
     @Builder.Default
     private boolean isDeleted = false;
 
+    @Version
+    private Long version;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
