@@ -178,7 +178,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     void bulkSoftDeleteByBoardIdJpql(@Param("boardId") Long boardId);
 
     //2
-    @Modifying(clearAutomatically = true)
     @Query(value = """
             UPDATE comment c
             INNER JOIN post p ON c.post_id = p.post_id
@@ -194,7 +193,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             UPDATE comment c
             INNER JOIN post p ON c.post_id = p.post_id
             SET c.is_deleted = 1, c.updated_at = NOW()
-            WHERE p.board_id = :boardId 
+            WHERE p.board_id = :boardId
             AND c.is_deleted = 0
             LIMIT :batchSize
             """, nativeQuery = true)

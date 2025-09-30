@@ -42,7 +42,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository; //postLikeService 따로 구현 않고 postservice 에서 직접 사용
     private final UserService userService;
-    private final CommentService commentService;
+//    private final CommentService commentService;
+    private final CommentRepository commentRepository;
     private final BoardService boardService;
 
     public Post findById(Long postId) {
@@ -80,7 +81,7 @@ public class PostService {
     }
 
     @Transactional
-    public Long write(PostRequest request, Long boardId, User author) {
+    public PostResponse write(PostRequest request, Long boardId, User author) {
         
         // 게시판 존재 여부 확인
         Board board = boardService.findById(boardId);
@@ -94,22 +95,22 @@ public class PostService {
 
         postRepository.save(newPost);
 
-        return newPost.getId();
+        return PostResponse.from(newPost);
     }
 
     @Transactional
-    public void update(PostRequest request) {
+    public PostResponse update(PostRequest request, Long currentUserId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(request.getId())
                 .orElseThrow(() -> new NotFoundException("수정하려는 게시글을 찾을 수 없습니다. ID: " + request.getId()));
 
+        // 권한 확인 (작성자만 수정 가능)
+        if (!post.getAuthor().getId().equals(currentUserId)) {
+            throw new IllegalArgumentException("게시글 수정 권한이 없습니다.");
+        }
+
         post.update(request.getTitle(), request.getContent());
 
-//        return PostResponse.from(post);
-
-//        PostResponse 를 리턴해주지 않고 void 타입 리턴으로 바꿔 수정의 역할만 수행하도록 변경! CQS 원칙
-//        isLiked 체크를 read 에서만 하도록
-//        write 메서드도 리턴 타입 수정
-//        like 메서드도 분리해야 일관성 있겠지만 일단 유지
+        return PostResponse.from(post);
     }
 
     @Transactional
@@ -117,7 +118,7 @@ public class PostService {
         Post post = findById(postId);
 
         // 하위 요소부터 처리
-        commentService.bulkSoftDeleteByPostId(postId);
+        commentRepository.bulkSoftDeleteByPostId(postId);
 
         post.softDelete();
     }
@@ -126,7 +127,7 @@ public class PostService {
 
     @Transactional
     public void bulkSoftDeleteByBoardId(Long boardId) {
-        postRepository.bulkSoftDeleteByBoardId(boardId);
+        postRepository.bulkSoftDeleteByBoardIdNative(boardId);
     }
 
     @Transactional
@@ -209,7 +210,17 @@ public class PostService {
         // 트랜잭션 종료 시 락 해제
     }
 
-    // Case 4: 낙관적 락 방식 (Optimistic Lock)
+    // Case 3-1: 비관적 락 방식 (Native Query)
+    @Transactional
+    public void incrementViewCountPessimisticNative(Long postId) {
+        // Native Query로 FOR UPDATE 사용
+        Post post = postRepository.findByIdWithPessimisticLockNative(postId)
+                .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
+        post.incrementViewCount();
+        postRepository.save(post);
+    }
+
+    // Case 4: 낙관적 락 방식 (수동 Version 체크)
     @Transactional
     public void incrementViewCountOptimistic(Long postId) {
         int maxRetries = 5;
@@ -217,11 +228,22 @@ public class PostService {
         
         while (attempt < maxRetries) {
             try {
-                Post post = postRepository.findById(postId)
-                        .orElseThrow(() -> new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId));
-                post.incrementViewCount();
-                postRepository.save(post); // Version 체크 후 UPDATE
-                return; // 성공 시 종료
+                // 현재 조회수 확인
+                Integer currentViewCount = postRepository.getCurrentViewCount(postId);
+                if (currentViewCount == null) {
+                    throw new NotFoundException("게시글을 찾을 수 없습니다. ID: " + postId);
+                }
+                
+                // 조회수 증가 시도 (현재 값과 일치할 때만 업데이트)
+                int updatedRows = postRepository.updateViewCountWithVersionCheck(
+                    postId, currentViewCount, currentViewCount + 1);
+                
+                if (updatedRows > 0) {
+                    return; // 성공
+                } else {
+                    // 다른 트랜잭션이 먼저 업데이트함 - 재시도 필요
+                    throw new OptimisticLockingFailureException("조회수가 다른 트랜잭션에 의해 변경됨");
+                }
                 
             } catch (OptimisticLockingFailureException e) {
                 attempt++;

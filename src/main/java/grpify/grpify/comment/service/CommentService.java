@@ -37,7 +37,6 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final PostService postService;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @Transactional(readOnly = true) // 리턴 타입 page, list 고민해보기
     public Page<CommentsResponse> findCommentsByPost(Long postId, Long currentUserId, Pageable pageable) {
@@ -119,12 +118,24 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(CommentRequest request, Long commentId) {
+    public CommentWriteResponse update(CommentRequest request, Long commentId, Long authorId) {
         Comment comment = findById(commentId);
 
-        // 권한 확인 필요
+        if (!comment.getAuthor().getId().equals(authorId)) {
+            throw new IllegalArgumentException("댓글 수정 권한이 없습니다.");
+        }
 
         comment.update(request.getContent());
+
+        // 수정된 댓글의 위치(페이지 번호) 계산
+        Post post = comment.getPost();
+        String sortKey = comment.getSortKey();
+        
+        long rank = commentRepository.countByPost_IdAndSortKeyLessThanEqual(post.getId(), sortKey);
+        int pageSize = 20; // 설정값
+        int pageNumber = (int) ((rank - 1) / pageSize);
+
+        return CommentWriteResponse.from(pageNumber, comment.getId());
     }
 
     @Transactional

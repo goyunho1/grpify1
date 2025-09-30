@@ -23,10 +23,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
-//    private final PostRepository postRepository;
-    private final PostService postService;
-    private final CommentService commentService;
-
+    private final PostRepository postRepository;
+//    private final PostService postService;
+//    private final CommentService commentService; //순환 참조 문제 때문에 repository 통해서 sodfdelete 실행
+    private final CommentRepository commentRepository;
     // 반환 타입 고민해보기
     @Transactional
     public BoardResponse create(BoardRequest request) {
@@ -47,9 +47,9 @@ public class BoardService {
     public void softDelete(Long boardId) {
         Board board = findById(boardId);
 
-        // 하위 요소부터 처리
-        commentService.bulkSoftDeleteByBoardId(boardId);
-        postService.bulkSoftDeleteByBoardId(boardId);
+        // 하위 요소부터 처리 //순환 참조 문제 때문에 repository 통해서 sodfdelete 실행
+        commentRepository.bulkSoftDeleteByBoardIdNative(boardId);
+        postRepository.bulkSoftDeleteByBoardIdNative(boardId);
 
         board.softDelete();
     }

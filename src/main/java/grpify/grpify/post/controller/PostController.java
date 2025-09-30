@@ -74,18 +74,15 @@ public class PostController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PostResponse> createPost(
             @PathVariable Long boardId,
-            @Valid @RequestBody PostRequest request, // boardId 제외된 DTO
+            @Valid @RequestBody PostRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-//        boardService.findById(boardId);
-
         User author = userDetails.getUser();
-        Long newPostId = postService.write(request, boardId, author);
+        PostResponse response = postService.write(request, boardId, author);
 
-        PostResponse post = postService.read(newPostId, author.getId());
-        URI location = URI.create("/api/boards/" + boardId + "/posts/" + newPostId);
+        URI location = URI.create("/api/boards/" + boardId + "/posts/" + response.getId());
 
-        return ResponseEntity.created(location).body(post);
+        return ResponseEntity.created(location).body(response);
     }
 
     /**
@@ -94,16 +91,17 @@ public class PostController {
      */
     @PutMapping("/{postId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> updatePost(
+    public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long postId,
             @Valid @RequestBody PostRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // PostRequest에 ID 설정
         request.setId(postId);
-        postService.update(request);
+        Long currentUserId = userDetails.getUser().getId();
+        PostResponse response = postService.update(request, currentUserId);
         
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 
     /**

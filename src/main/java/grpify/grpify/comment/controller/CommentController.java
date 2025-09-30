@@ -1,9 +1,7 @@
 package grpify.grpify.comment.controller;
 
 import grpify.grpify.auth.CustomUserDetails;
-import grpify.grpify.comment.dto.CommentRequest;
-import grpify.grpify.comment.dto.CommentsResponse;
-import grpify.grpify.comment.dto.CommentWriteResponse;
+import grpify.grpify.comment.dto.*;
 import grpify.grpify.comment.service.CommentService;
 import grpify.grpify.commentLike.dto.LikeResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +24,6 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    public record LikeRequest(boolean like) {}
-
     /**
      * 댓글 목록 조회 (게시글별)
      * 모든 사용자가 접근 가능 (비로그인 포함)
@@ -43,6 +39,20 @@ public class CommentController {
         Page<CommentsResponse> comments = commentService.findCommentsByPost(postId, currentUserId, pageable);
         return ResponseEntity.ok(comments);
     }
+
+//    /**
+//     * 댓글 조회 (단일)
+//     * GET /api/comments/{commentId}
+//     */
+//    @GetMapping("/comments/{commentId}")
+//    public ResponseEntity<CommentsResponse> getComment(
+//            @PathVariable Long commentId,
+//            @AuthenticationPrincipal CustomUserDetails userDetails) {
+//
+//        Long currentUserId = (userDetails != null) ? userDetails.getUser().getId() : null;
+//        CommentsResponse comment = commentService.findById(commentId, currentUserId);
+//        return ResponseEntity.ok(comment);
+//    }
 
     /**
      * 댓글 작성 (일반 댓글 및 대댓글)
@@ -67,13 +77,14 @@ public class CommentController {
      */
     @PutMapping("/{commentId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> updateComment(
+    public ResponseEntity<CommentWriteResponse> updateComment(
             @PathVariable Long commentId,
             @Valid @RequestBody CommentRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        
-        commentService.update(request, commentId);
-        return ResponseEntity.ok().build();
+
+        Long authorId = userDetails.getUser().getId();
+        CommentWriteResponse response = commentService.update(request, commentId, authorId);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -103,7 +114,7 @@ public class CommentController {
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         
         Long userId = userDetails.getUser().getId();
-        LikeResponse response = commentService.like(userId, commentId, request.like());
+        LikeResponse response = commentService.like(userId, commentId, request.isLike()); //boolean 타입은 getXX 대신 isXX 로 생성.
         return ResponseEntity.ok(response);
     }
 }

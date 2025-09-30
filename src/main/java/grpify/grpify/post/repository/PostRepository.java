@@ -60,11 +60,24 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByBoardAndIsDeletedFalse(Board board, Pageable pageable);
 
-    void bulkSoftDeleteByBoardId(Long boardId);
 
     // 비관적 락을 위한 메서드
     @Query("SELECT p FROM Post p WHERE p.id = :postId")
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Post> findByIdWithPessimisticLock(@Param("postId") Long postId);
+
+    // Native 쿼리로 비관적 락 구현
+    @Query(value = "SELECT * FROM post WHERE post_id = :postId FOR UPDATE", nativeQuery = true)
+    Optional<Post> findByIdWithPessimisticLockNative(@Param("postId") Long postId);
+
+    // Case 4: 낙관적 락 시뮬레이션 (수동 Version 체크)
+    @Query("SELECT p.viewCount FROM Post p WHERE p.id = :postId")
+    Integer getCurrentViewCount(@Param("postId") Long postId);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.viewCount = :newViewCount WHERE p.id = :postId AND p.viewCount = :expectedViewCount")
+    int updateViewCountWithVersionCheck(@Param("postId") Long postId, 
+                                       @Param("expectedViewCount") Integer expectedViewCount,
+                                       @Param("newViewCount") Integer newViewCount);
 }
 
