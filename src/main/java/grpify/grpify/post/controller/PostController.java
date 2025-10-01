@@ -2,7 +2,6 @@ package grpify.grpify.post.controller;
 
 import grpify.grpify.auth.CustomUserDetails;
 import grpify.grpify.PostLike.dto.LikeResponse;
-import grpify.grpify.board.service.BoardService;
 import grpify.grpify.post.dto.PostRequest;
 import grpify.grpify.post.dto.PostResponse;
 import grpify.grpify.post.service.PostService;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,11 +20,10 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/boards/{boardId}/posts")
+@RequestMapping("/api/posts")
 public class PostController {
 
     private final PostService postService;
-    private final BoardService boardService;
 
     // 좋아요 요청 DTO를 record로 간결하게 정의
     public record LikeRequest(boolean like) {}
@@ -34,13 +31,12 @@ public class PostController {
     /**
      * 게시글 목록 조회 (게시판별)
      * 모든 사용자가 접근 가능 (비로그인 포함)
+     * boardId를 쿼리 파라미터로 받아 필터링
      */
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getPostsByBoard(
-            @PathVariable Long boardId,
+            @RequestParam(required = true) Long boardId,
             @PageableDefault(size = 20, sort = "createdAt") Pageable pageable) {
-
-//        boardService.findById(boardId); //postService.findByBoard 에서 검사
 
         Page<PostResponse> posts = postService.findByBoard(boardId, pageable);
         return ResponseEntity.ok(posts);
@@ -69,18 +65,19 @@ public class PostController {
     /**
      * 게시글 작성
      * 로그인된 사용자만 접근 가능
+     * boardId를 RequestBody에 포함
      */
     @PostMapping
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PostResponse> createPost(
-            @PathVariable Long boardId,
             @Valid @RequestBody PostRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         User author = userDetails.getUser();
-        PostResponse response = postService.write(request, boardId, author);
+        // PostRequest에 boardId가 포함되어 있다고 가정
+        PostResponse response = postService.write(request, request.getBoardId(), author);
 
-        URI location = URI.create("/api/boards/" + boardId + "/posts/" + response.getId());
+        URI location = URI.create("/api/posts/" + response.getId());
 
         return ResponseEntity.created(location).body(response);
     }

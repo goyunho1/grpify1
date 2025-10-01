@@ -31,7 +31,7 @@ public class CommentController {
      */
     @GetMapping
     public ResponseEntity<Page<CommentsResponse>> getComments(
-            @RequestParam Long postId,
+            @RequestParam(required = true) Long postId,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(size = 20, sort = "sortKey") Pageable pageable) {
         
@@ -40,19 +40,6 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-//    /**
-//     * 댓글 조회 (단일)
-//     * GET /api/comments/{commentId}
-//     */
-//    @GetMapping("/comments/{commentId}")
-//    public ResponseEntity<CommentsResponse> getComment(
-//            @PathVariable Long commentId,
-//            @AuthenticationPrincipal CustomUserDetails userDetails) {
-//
-//        Long currentUserId = (userDetails != null) ? userDetails.getUser().getId() : null;
-//        CommentsResponse comment = commentService.findById(commentId, currentUserId);
-//        return ResponseEntity.ok(comment);
-//    }
 
     /**
      * 댓글 작성 (일반 댓글 및 대댓글)

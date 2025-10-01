@@ -11,8 +11,8 @@ import lombok.Setter;
 public class PostRequest {
     private Long id;
     
-//    @NotNull(message = "게시판 ID는 필수입니다.")
-//    private Long boardId;
+    @NotNull(message = "게시판 ID는 필수입니다.")
+    private Long boardId;
     
     @NotBlank(message = "제목은 필수입니다.")
     @Size(max = 100, message = "제목은 100자를 초과할 수 없습니다.")

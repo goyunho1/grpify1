@@ -146,8 +146,24 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     );
 
 
-    long countByPost_IdAndSortKeyLessThanEqual(Long postId, String sortKey);
 
+    /**
+     *    CREATE INDEX idx_comment_rank_calculation
+     *    ON comment (post_id, sort_key)
+     *    COMMENT '댓글 순위 계산용 인덱스';
+     *    (post_id, sort_key) 로 인덱스 설정
+     *
+     *    1. post_id 값 찾아 빠르게 이동
+     *    2. sort_key 기준 range scan
+     *    3. 인덱스만으로 COUNT 완료 (커버링 인덱스)
+     *
+     *    TODO:
+     *    인덱스 키의 크기가 클수록 하나의 인덱스 페이지에 저장할 수 있는 키의 수가 적어지는 것으로 알고있는데 현재의 sort_key 가 너무 크지는 않을까?
+     *    비교해보고 성능차이 크다면 sortKey 길이 제한, depth 제한 필요할 듯...
+     *    UI 문제로 어차피 depth 제한 해야함. -> ui 제작 해보고 가능한 depth에 따라 조정하면 될 듯??
+     *
+     */
+    long countByPost_IdAndSortKeyLessThanEqual(Long postId, String sortKey);
 
 
 

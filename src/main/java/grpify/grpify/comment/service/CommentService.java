@@ -100,12 +100,12 @@ public class CommentService {
                 .parentComment(parent)
                 .build();
 
-        commentRepository.save(newComment);
+        commentRepository.save(newComment); // @GeneratedValue = IDENTITY 이므로 save 호출 즉시 insert 쿼리 실행(쓰기 지연 X) 되어 commentId 생성
 
         String selfKey = String.format("%010d", newComment.getId());
         sortKey = (parent != null) ? parent.getSortKey() + "->" + selfKey : selfKey;
 
-        newComment.setSortKey(selfKey); // 빌더로 다시 객체 생성할지 setter 사용할지 고민 필요.
+        newComment.setSortKey(sortKey); // sortKey 설정 (계층 구조 포함)
 
         postService.incrementCommentCount(post.getId());
 
@@ -142,7 +142,10 @@ public class CommentService {
     public void softDelete(Long commentId, Long userId) {
         Comment comment = findById(commentId);
 
-        //권한 확인 필요
+        // 권한 확인 (작성자만 삭제 가능)
+        if (!comment.getAuthor().getId().equals(userId)) {
+            throw new IllegalArgumentException("댓글 삭제 권한이 없습니다.");
+        }
 
         comment.softDelete();
         postService.decrementCommentCount(comment.getPost().getId());
