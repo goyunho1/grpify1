@@ -251,3 +251,8 @@
 2025-11-03T01:10:04.991+09:00  INFO 10460 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
 2025-11-03T01:10:05.036+09:00  INFO 10460 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
 2025-11-03T01:10:05.045+09:00  INFO 10460 --- [restartedMain] grpify.grpify.GrpifyApplication          : Started GrpifyApplication in 7.899 seconds (process running for 8.448)
+2025-11-03T01:11:30.915+09:00  INFO 10460 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-03T01:11:30.916+09:00  INFO 10460 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-03T01:11:30.932+09:00  INFO 10460 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-03T01:11:30.932+09:00  INFO 10460 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-03T01:11:30.942+09:00  INFO 10460 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -74,7 +74,7 @@
 
 유튜브 영상 설명란에 있는 트랙리스트를 캡쳐하여 업로드하세요.
 
-![YouTube 트랙리스트 예시](./images/example1-youtube.png)
+![YouTube 트랙리스트 예시](images/example1-youtube.png)
 
 → 자동으로 곡 정보 인식 후 플레이리스트 생성!
 
@@ -84,7 +84,7 @@
 
 프로듀서나 아티스트의 작업물 목록 페이지를 캡쳐하세요.
 
-![나무위키 디스코그래피 예시](./images/example2-namuwiki.png)
+![나무위키 디스코그래피 예시](images/example2-namuwiki.png)
 
 → 프로듀서의 전체 작업물이 한 번에 플레이리스트로!
 
@@ -94,7 +94,7 @@
 
 다른 스트리밍 플랫폼의 플레이리스트를 Spotify로 옮기세요.
 
-![Apple Music 플레이리스트 예시](./images/example3-apple-music.png)
+![Apple Music 플레이리스트 예시](images/example3-apple-music.png)
 
 → 동일한 곡들이 Spotify 플레이리스트로 생성됨
 
