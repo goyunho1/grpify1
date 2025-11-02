@@ -55,7 +55,7 @@ public class OpenAiService {
                                 )
                         )
                 ),
-                "max_tokens", 1000
+                "max_tokens", 5000
         );
 
 
