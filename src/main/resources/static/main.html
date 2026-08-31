@@ -7,6 +7,11 @@
 </head>
 <body>
 
+<div class="nav-container">
+    <a href="/redirect.html" class="range-text">Home</a>
+    <a href="/card.html" class="range-text">Card</a>
+</div>
+
 <!-- 이미지 업로드 결과 표시 영역 -->
 <div id="imageTrackListContainer" class="trackListContainer"></div>
 
@@ -227,10 +232,7 @@
             spinnerEl.remove();
 
             if (!tracks || tracks.length === 0) {
-                const noResult = document.createElement("div");
-                noResult.classList.add("track-item");
-                noResult.innerHTML = `<div class="track-number">-</div><div class="track-title">❌ 감지된 트랙 없음</div>`;
-                imageTrackListContainer.appendChild(noResult);
+                alert("❌ 감지된 트랙 없음");
                 return;
             }
 

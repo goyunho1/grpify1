@@ -75,6 +75,14 @@
   font-weight: 700;
   text-align: center;
   margin: 0px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .card-time {
@@ -103,6 +111,23 @@
   padding: 0.5rem 1rem;
   border-radius: 30px;
   backdrop-filter: blur(8px);
+}
+
+.nav-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+}
+
+.nav-container a {
+  text-decoration: none;
+  color: #fff;
 }
 
 .profile-image {
@@ -249,4 +274,54 @@
   font-weight: bold;
   font-size: 16px;
   padding: 4px 10px;
+}
+
+
+
+
+/* ========== 스켈레톤 로딩 스타일 추가 ========== */
+
+/* 스켈레톤 로딩 애니메이션 */
+.skeleton {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 스켈레톤 이미지는 실제 img 태그로 생성되므로 기존 .track-item img 스타일 적용 */
+.skeleton-image.skeleton {
+  background: linear-gradient(90deg, #2a2a2a 25%, #3a3a3a 50%, #2a2a2a 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+.skeleton-text {
+  border-radius: 4px;
+}
+
+.skeleton-text.title {
+  width: 70%;
+  min-height: 14px; /* track-title과 동일한 높이 유지 */
+  margin-bottom: 6px;
+}
+
+.skeleton-text.artist {
+  width: 50%;
+  min-height: 12px; /* track-artists와 동일한 높이 유지 */
+}
+
+/* 페이드인 효과 */
+.track-item.loaded {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

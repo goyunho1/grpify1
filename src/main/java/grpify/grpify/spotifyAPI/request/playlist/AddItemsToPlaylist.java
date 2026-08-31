@@ -26,18 +26,28 @@ public class AddItemsToPlaylist {
                 .toUriString();
     }
 
-    public String body() {
+//    public String body() {
+//        Map<String, Object> body = new HashMap<>();
+//        body.put("uris", uris);
+//        body.put("position", position);
+//
+//        try {
+//            return new ObjectMapper().writeValueAsString(body);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException("Failed to serialize request body", e);
+//        }
+//    }
+//
+    public Map<String, Object> body() {
         Map<String, Object> body = new HashMap<>();
         body.put("uris", uris);
-        body.put("position", position);
 
-        try {
-            return new ObjectMapper().writeValueAsString(body);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize request body", e);
+        if (position != null) {
+            body.put("position", position);
         }
-    }
 
+        return body;
+    }
     public void request(WebClient webClient, String accessToken) { // WebClient 주입 받는 방식 고려.
         webClient.post()
             .uri(endpoint())

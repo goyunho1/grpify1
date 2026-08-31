@@ -5,11 +5,19 @@
   <meta charset="UTF-8">
   <title>Recap</title>
   <link rel="stylesheet" type="text/css" href="/css/card.css">
+  
+   
 </head>
 <body>
+
   <div class="profile-container">
     <img alt="User Profile" class="profile-image" />
     <span class="profile-name">사용자 이름</span>
+  </div>
+
+  <div class="nav-container">
+    <a href="/redirect.html" class="range-text">Home</a>
+    <a href="/main.html" class="range-text">Playlist</a>
   </div>
 
   <!-- 상단 텍스트 -->
@@ -24,13 +32,17 @@
   
       <div class="limit-selector">
         <span class="arrow" id="decrease-limit">−</span>
-        <span id="limit" class="range-text" data-value="10">10</span>
+        <span id="limit" class="range-text" data-value="12">12</span>
         <span class="arrow" id="increase-limit">＋</span>
       </div>
     </div>
   
-    <p class="time">3,699곡</p>
+
   </div>
+
+
+
+
 
 <div class="card-track-wrapper">
   <div class="content-container">
@@ -38,16 +50,20 @@
     <div class="card" data-type="artists">
       <p class="card-subtitle">가장 많이 들은 아티스트</p>
       <div class="card-content vertical">
-        <img alt="고고학" class="artist-image" />
+        <img alt="" class="artist-image" />
         <p class="card-title">아티스트</p>
       </div>
     </div>
+
+
+
+
 
     <!-- 트랙 카드 -->
     <div class="card" data-type="tracks">
       <p class="card-subtitle">가장 많이 들은 노래</p>
       <div class="card-content vertical">
-        <img alt="우물" class="track-image" />
+        <img alt="" class="track-image" />
         <p class="card-title">제목 · 아티스트 </p>
       </div>
     </div>
@@ -60,7 +76,18 @@
 
 
 
+
+
+
+
+
+
   <script>
+    let cachedItems = {
+      tracks: [],
+      artists: []
+    };
+
     const token = localStorage.getItem('access_token');
 
      // 토큰이 없으면 즉시 로그인 페이지로 보냄
@@ -122,14 +149,47 @@
      const nextRangeBtn = document.getElementById("next-range");
 
      function updateTimeRange(index) {
-       currentRangeIndex = index;
-       timeRangeElem.textContent = ranges[index].label;
-       timeRangeElem.dataset.value = ranges[index].value;
+        currentRangeIndex = index;
+        timeRangeElem.textContent = ranges[index].label;
+        timeRangeElem.dataset.value = ranges[index].value;
 
-       getUsersTopItems(type);
+        // time_range가 변경되면 캐시 초기화
+        cachedItems = { tracks: [], artists: [] };
+
+        // 두 타입 모두 API 호출 및 카드 업데이트
+        Promise.all([
+          getUsersTopItems("tracks"),
+          getUsersTopItems("artists")
+        ]).then(() => {
+          // 양쪽 카드 모두 업데이트
+          const currentLimit = parseInt(limitElem.dataset.value);
+          
+          // Artists 카드 업데이트
+          if (cachedItems.artists.length > 0 && cachedItems.artists[0]) {
+            artistImg.src = cachedItems.artists[0].image;
+            document.querySelectorAll(".card")[0].querySelector(".card-title").textContent = cachedItems.artists[0].name;
+            applyVibrantColor(artistImg, 0, (color) => mutedColorA = color);
+          }
+          
+          // Tracks 카드 업데이트
+          if (cachedItems.tracks.length > 0 && cachedItems.tracks[0]) {
+            trackImg.src = cachedItems.tracks[0].cover;
+            document.querySelectorAll(".card")[1].querySelector(".card-title").textContent = 
+              `${cachedItems.tracks[0].title} · ${cachedItems.tracks[0].artists.join(", ")}`;
+            applyVibrantColor(trackImg, 1, (color) => mutedColorT = color);
+          }
+          
+          // 현재 선택된 타입의 리스트 표시
+          displayItems(type, currentLimit);
+        });
      }
      prevRangeBtn.onclick = () => updateTimeRange((currentRangeIndex - 1 + ranges.length) % ranges.length);
      nextRangeBtn.onclick = () => updateTimeRange((currentRangeIndex + 1) % ranges.length);
+
+
+
+
+
 
      //limit 설정
      const limitElem = document.getElementById("limit");
@@ -138,7 +198,7 @@
 
      function updateLimit(change) {
        let current = parseInt(limitElem.dataset.value, 10);
-       const updated = Math.min(50, Math.max(1, current + change));
+       const updated = Math.min(30, Math.max(1, current + change));
        if (updated !== current) {
          limitElem.textContent = updated;
          limitElem.dataset.value = updated;
@@ -151,15 +211,65 @@
 
 
 
-     getUsersTopItems("tracks");
-     getUsersTopItems("artists");
+     // ========== 병렬 API 호출 추가 ==========
+     window.addEventListener('DOMContentLoaded', async () => {
+       try {
+         console.log('📊 데이터 로딩 시작...');
+         const startTime = performance.now();
+         
+         // 초기 스켈레톤 표시
+         createSkeletonItems("tracks", 12);
+         
+         // 병렬로 모든 API 호출
+         await Promise.all([
+           getUsersProfile(),
+           getUsersTopItems("tracks"),
+           getUsersTopItems("artists")
+         ]);
+
+         displayItems("artists", 12);
+         displayItems("tracks", 12);
+
+         const endTime = performance.now();
+         console.log(`✅ 데이터 로딩 완료! (${Math.round(endTime - startTime)}ms)`);
+         
+
+         
+       } catch (error) {
+         console.error('❌ 데이터 로딩 실패:', error);
+         
+         // 에러 메시지 표시
+         document.body.innerHTML = `
+           <div style="
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             align-items: center;
+             height: 100vh;
+             text-align: center;
+             padding: 20px;
+             background: linear-gradient(180deg, #1a1a1a, #2a2a2a);
+           ">
+             <h2 style="color: #ff6b6b; margin-bottom: 20px;">⚠️ 데이터를 불러올 수 없습니다</h2>
+             <p style="color: #999; margin-bottom: 30px;">${error.message}</p>
+             <button onclick="location.reload()" style="
+               padding: 12px 24px;
+               background: #1db954;
+               color: white;
+               border: none;
+               border-radius: 24px;
+               cursor: pointer;
+               font-size: 16px;
+             ">다시 시도</button>
+           </div>
+         `;
+       }
+     });
 
      const trackImg = document.querySelector(".track-image");
      const artistImg = document.querySelector(".artist-image");
      const profileImg = document.querySelector(".profile-image");
      const profileName = document.querySelector(".profile-name");
-
-     getUsersProfile()
 
      trackImg.crossOrigin = "Anonymous";
      artistImg.crossOrigin = "Anonymous";
@@ -192,7 +302,7 @@
      }
 
      function getUsersProfile(){
-       fetchWithAuth(`/groupify/user-profile`, {
+       return fetchWithAuth(`/groupify/user-profile`, {
            method: "GET",
            headers: {
          "Authorization": "Bearer " + token,
@@ -222,176 +332,274 @@
          }
      });
 
-     function getUsersTopItems(type) {
-       const time_range = document.getElementById("time_range").dataset.value;
-       const limit = document.getElementById("limit").dataset.value;
-
-       fetchWithAuth(`/groupify/top-${type}?time_range=${time_range}&limit=${limit}`, {
-           method: "GET",
-           headers: {
-         "Authorization": "Bearer " + token,
-         "Content-Type": "application/json"
-     }
-       })
-       .then(response => response.json())
-       .then(items => {
-         const trackListContainer = document.getElementById("trackListContainer");
-         trackListContainer.innerHTML = ""; // 기존 리스트 초기화
-         const trackListContainer_wrapper = document.getElementById("trackListContainer-wrapper");
-
-         if (items.length === 0) {
-             trackListContainer.innerHTML = "<p>❌ 조회된 데이터가 없습니다.</p>";
-             return;
-         }
-
-         const uris = [];
-
-           items.forEach((item, index) => {
-                 if (type === "artists") {
-                     const artistElement = document.createElement('div');
-                     artistElement.classList.add('track-item'); // 트랙과 동일한 스타일 적용
-
-                     const trackNumber = document.createElement('div');
-                     trackNumber.classList.add('track-number');
-                     trackNumber.textContent = index + 1;
-                     trackNumber.style.marginRight = "10px";
-
-                     const img = document.createElement('img');
-                     img.src = item.image;
-                     img.alt = item.name;
-                     img.classList.add("track-img");
-
-                     if (index == 0){
-                       artistImg.src = item.image;
-                       document.querySelectorAll(".card")[0].querySelector(".card-title").textContent = item.name;
-                       applyVibrantColor(artistImg, 0, (color) => mutedColorA = color);
-                     }
-
-                     const infoDiv = document.createElement('div');
-                     infoDiv.classList.add('track-info');
-
-                     const name = document.createElement('div');
-                     name.classList.add('track-title');
-                     name.textContent = item.name;
-
-                     const genres = document.createElement('div');
-                     genres.classList.add('track-artists');
-                     genres.textContent = item.genres.join(", "); // 아티스트의 장르 표시
-
-                     const playLink = document.createElement('a');
-                     playLink.href = item.url; // Spotify 아티스트 페이지로 이동
-                     playLink.target = "_blank";
-                     playLink.innerHTML = "▶";
-                     playLink.classList.add('play-button');
-
-                     infoDiv.appendChild(name);
-                     infoDiv.appendChild(genres);
-
-                     artistElement.appendChild(trackNumber);
-                     artistElement.appendChild(img);
-                     artistElement.appendChild(infoDiv);
-                     artistElement.appendChild(playLink);
-
-                     trackListContainer.appendChild(artistElement);
-                 }
-                 else { //tracks
-                     uris.push(item.uri);
-
-                     const trackElement = document.createElement('div');
-                     trackElement.classList.add('track-item');
-
-                     const trackNumber = document.createElement('div');
-                     trackNumber.classList.add('track-number');
-                     trackNumber.textContent = index + 1;
-                     trackNumber.style.marginRight = "10px";
 
 
-                     const img = document.createElement('img');
-                     img.src = item.cover;
-                     img.alt = item.title;
 
-                     if (index == 0){
-                       trackImg.src = item.cover;
-                       document.querySelectorAll(".card")[1].querySelector(".card-title").textContent = `${items[0].title} · ${items[0].artists.join(", ")}`;
-                       applyVibrantColor(trackImg, 1, (color) => mutedColorT = color);
-                     }
 
-                     const infoDiv = document.createElement('div');
-                     infoDiv.classList.add('track-info');
 
-                     const title = document.createElement('div');
-                     title.classList.add('track-title');
-                     title.textContent = item.title;
+    function getUsersTopItems(type) {
+      const time_range = document.getElementById("time_range").dataset.value;
+      const limit = document.getElementById("limit").dataset.value;
 
-                     const artists = document.createElement('div');
-                     artists.classList.add('track-artists');
-                     artists.textContent = item.artists.join(", ");
+      if (cachedItems[type].length === 30 && parseInt(limit) <= 30) {
+        displayItems(type, parseInt(limit));
+        return Promise.resolve();
+      }
 
-                     const playLink = document.createElement('a');
-                     playLink.href = `https://open.spotify.com/track/${item.uri.replace("spotify:track:", "")}`;
-                     playLink.target = "_blank";
-                     playLink.innerHTML = "▶";
-                     playLink.classList.add('play-button');
+      return fetchWithAuth(`/groupify/top-${type}?time_range=${time_range}&limit=30`, {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+          }
+      })
+      .then(response => response.json())
+      .then(items => {
+        cachedItems[type] = items;
+        // 여기서 displayItems 호출하지 않음
+      });
+    }
 
-                     infoDiv.appendChild(title);
-                     infoDiv.appendChild(artists);
+    // 스켈레톤 아이템 생성 (빈 구조만)
+    function createSkeletonItems(type, limit) {
+      const trackListContainer = document.getElementById("trackListContainer");
+      trackListContainer.innerHTML = "";
+      
+      for (let i = 0; i < limit; i++) {
+        const skeletonElement = document.createElement('div');
+        skeletonElement.classList.add('track-item');
+        skeletonElement.dataset.index = i;
+        
+        // 트랙 번호
+        const trackNumber = document.createElement('div');
+        trackNumber.classList.add('track-number', 'skeleton');
+        trackNumber.textContent = i + 1;
+        trackNumber.style.marginRight = "10px";
+        
+        // 이미지 플레이스홀더 (실제 img 태그로 생성하여 크기 유지)
+        const img = document.createElement('img');
+        img.classList.add('skeleton-image', 'skeleton');
+        img.style.width = '50px';
+        img.style.height = '50px';
+        img.style.borderRadius = '5px';
+        img.style.marginRight = '10px';
+        // 빈 이미지 대신 투명한 데이터 URL 사용
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        img.alt = 'Loading...';
+        
+        // 정보 영역
+        const infoDiv = document.createElement('div');
+        infoDiv.classList.add('track-info');
+        
+        // 제목 스켈레톤 (실제 텍스트 크기 유지)
+        const titleSkeleton = document.createElement('div');
+        titleSkeleton.classList.add('skeleton-text', 'title', 'skeleton', 'track-title');
+        titleSkeleton.innerHTML = '&nbsp;'; // 공백으로 높이 유지
+        
+        // 아티스트 스켈레톤 (실제 텍스트 크기 유지)
+        const artistSkeleton = document.createElement('div');
+        artistSkeleton.classList.add('skeleton-text', 'artist', 'skeleton', 'track-artists');
+        artistSkeleton.innerHTML = '&nbsp;'; // 공백으로 높이 유지
+        
+        infoDiv.appendChild(titleSkeleton);
+        infoDiv.appendChild(artistSkeleton);
+        
+        // 플레이 버튼 플레이스홀더
+        const playPlaceholder = document.createElement('div');
+        playPlaceholder.classList.add('play-button');
+        playPlaceholder.style.visibility = 'hidden';
+        playPlaceholder.innerHTML = '▶'; // 실제 크기 유지
+        
+        skeletonElement.appendChild(trackNumber);
+        skeletonElement.appendChild(img);
+        skeletonElement.appendChild(infoDiv);
+        skeletonElement.appendChild(playPlaceholder);
+        
+        trackListContainer.appendChild(skeletonElement);
+      }
+    }
 
-                     trackElement.appendChild(trackNumber);
-                     trackElement.appendChild(img);
-                     trackElement.appendChild(infoDiv);
-                     trackElement.appendChild(playLink);
+    // 화면 표시 로직을 별도 함수로 분리
+    function displayItems(type, limit) {
+      const items = cachedItems[type].slice(0, limit);
+      const trackListContainer = document.getElementById("trackListContainer");
+      
+      // 1단계: 스켈레톤 UI 생성 (데이터 없이 구조만)
+      if (trackListContainer.innerHTML === "" || trackListContainer.querySelectorAll('.track-item').length !== limit) {
+        createSkeletonItems(type, limit);
+      }
+      
+      // 2단계: 데이터가 있으면 채워넣기
+      if (items.length === 0) {
+        trackListContainer.innerHTML = "<p>❌ 조회된 데이터가 없습니다.</p>";
+        return;
+      }
+      
+      fillItemsWithData(type, items);
+    }
 
-                     trackListContainer.appendChild(trackElement);
-                 }
-             });
-
-             // 플레이리스트 생성 버튼 추가
-             if (type !== "artists" && uris.length > 0) {
-                 document.getElementById("savePlaylistBtn").style.display = "block";
-                 const playlistName = {
-                     "short_term": "Last 4 weeks",
-                     "medium_term": "Last 6 months",
-                     "long_term": "Last year"
-                 }[time_range];
-
-                 document.getElementById("savePlaylistBtn").onclick = () => createPlaylistAndAddTracks(
-                     uris,
-                     `${playlistName} top tracks (from ${new Date().toLocaleDateString()})`,
-                     "Generated by Groupify"
-                 );
-
-             }
-             else {
-               document.getElementById("savePlaylistBtn").style.display = "none";
+    // 기존 div에 데이터 채우기
+    function fillItemsWithData(type, items) {
+      const trackListContainer = document.getElementById("trackListContainer");
+      const trackItems = trackListContainer.querySelectorAll('.track-item');
+      const uris = [];
+      
+      items.forEach((item, index) => {
+        if (index >= trackItems.length) return;
+        
+        const trackElement = trackItems[index];
+        trackElement.classList.add('loaded'); // 페이드인 효과
+        
+        if (type === "artists") {
+          // 이미지 교체 (이미 img 태그이므로 src만 변경)
+          const img = trackElement.querySelector('.skeleton-image');
+          if (img) {
+            img.src = item.image;
+            img.alt = item.name;
+            img.classList.remove('skeleton');
+            img.classList.add('track-img');
+          }
+          
+          // 첫 번째 아이템은 카드에도 반영
+          if (index === 0) {
+            artistImg.src = item.image;
+            document.querySelectorAll(".card")[0].querySelector(".card-title").textContent = item.name;
+            applyVibrantColor(artistImg, 0, (color) => mutedColorA = color);
+          }
+          
+          // 텍스트 교체
+          const infoDiv = trackElement.querySelector('.track-info');
+          if (infoDiv) {
+            const titleElement = infoDiv.querySelector('.track-title');
+            const artistElement = infoDiv.querySelector('.track-artists');
+            
+            if (titleElement) {
+              titleElement.textContent = item.name;
+              titleElement.classList.remove('skeleton', 'skeleton-text', 'title');
             }
-         })
-         .catch(error => {
-             document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
-         });
-     }
-
-
-
-
-        function createPlaylistAndAddTracks(uris, name, description) {
-            fetchWithAuth(`/groupify/create-playlist`, {
-                method: "POST",
-                headers: {
-                "Authorization": "Bearer " + token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name, description, uris })  // JSON 객체로 전달
-            })
-            .then(response => response.text())  // 플레이리스트 ID 응답 받기
-            .then(playlistId => {
-                const playlistUrl = `https://open.spotify.com/playlist/${playlistId}`;
-                const newWindow = window.open(playlistUrl, '_blank');
-                newWindow.location.href = playlistUrl;
-            })
-            .catch(error => {
-                document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
-            });
+            
+            if (artistElement) {
+              artistElement.textContent = item.genres.join(", ");
+              artistElement.classList.remove('skeleton', 'skeleton-text', 'artist');
+            }
+          }
+          
+          // 플레이 버튼
+          const playButton = trackElement.querySelector('.play-button');
+          if (playButton) {
+            const playLink = document.createElement('a');
+            playLink.href = item.url;
+            playLink.target = "_blank";
+            playLink.innerHTML = "▶";
+            playLink.classList.add('play-button');
+            playButton.replaceWith(playLink);
+          }
+          
+          // 트랙 번호 스켈레톤 제거
+          const trackNumber = trackElement.querySelector('.track-number');
+          if (trackNumber) {
+            trackNumber.classList.remove('skeleton');
+          }
+          
+        } else { // tracks
+          uris.push(item.uri);
+          
+          // 이미지 교체 (이미 img 태그이므로 src만 변경)
+          const img = trackElement.querySelector('.skeleton-image');
+          if (img) {
+            img.src = item.cover;
+            img.alt = item.title;
+            img.classList.remove('skeleton');
+          }
+          
+          // 첫 번째 아이템은 카드에도 반영
+          if (index === 0) {
+            trackImg.src = item.cover;
+            document.querySelectorAll(".card")[1].querySelector(".card-title").textContent = 
+              `${items[0].title} · ${items[0].artists.join(", ")}`;
+            applyVibrantColor(trackImg, 1, (color) => mutedColorT = color);
+          }
+          
+          // 텍스트 교체
+          const infoDiv = trackElement.querySelector('.track-info');
+          if (infoDiv) {
+            const titleElement = infoDiv.querySelector('.track-title');
+            const artistElement = infoDiv.querySelector('.track-artists');
+            
+            if (titleElement) {
+              titleElement.textContent = item.title;
+              titleElement.classList.remove('skeleton', 'skeleton-text', 'title');
+            }
+            
+            if (artistElement) {
+              artistElement.textContent = item.artists.join(", ");
+              artistElement.classList.remove('skeleton', 'skeleton-text', 'artist');
+            }
+          }
+          
+          // 플레이 버튼
+          const playButton = trackElement.querySelector('.play-button');
+          if (playButton) {
+            const playLink = document.createElement('a');
+            playLink.href = `https://open.spotify.com/track/${item.uri.replace("spotify:track:", "")}`;
+            playLink.target = "_blank";
+            playLink.innerHTML = "▶";
+            playLink.classList.add('play-button');
+            playButton.replaceWith(playLink);
+          }
+          
+          // 트랙 번호 스켈레톤 제거
+          const trackNumber = trackElement.querySelector('.track-number');
+          if (trackNumber) {
+            trackNumber.classList.remove('skeleton');
+          }
         }
+      });
+      
+      // 플레이리스트 생성 버튼
+      if (type !== "artists" && uris.length > 0) {
+        document.getElementById("savePlaylistBtn").style.display = "block";
+        const time_range = document.getElementById("time_range").dataset.value;
+        const playlistName = {
+          "short_term": "Last 4 weeks",
+          "medium_term": "Last 6 months",
+          "long_term": "Last year"
+        }[time_range];
+        
+        document.getElementById("savePlaylistBtn").onclick = () => createPlaylistAndAddTracks(
+          uris,
+          `${playlistName} top tracks (from ${new Date().toLocaleDateString()})`,
+          "Generated by Groupify"
+        );
+      } else {
+        document.getElementById("savePlaylistBtn").style.display = "none";
+      }
+    }
+
+
+
+
+
+
+      function createPlaylistAndAddTracks(uris, name, description) {
+          fetchWithAuth(`/groupify/create-playlist`, {
+              method: "POST",
+              headers: {
+              "Authorization": "Bearer " + token,
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ name, description, uris })  // JSON 객체로 전달
+          })
+          .then(response => response.text())  // 플레이리스트 ID 응답 받기
+          .then(playlistId => {
+              const playlistUrl = `https://open.spotify.com/playlist/${playlistId}`;
+              const newWindow = window.open(playlistUrl, '_blank');
+              newWindow.location.href = playlistUrl;
+          })
+          .catch(error => {
+              document.getElementById("trackListContainer").textContent = "❌ 오류 발생: " + error;
+          });
+      }
     </script>
   
 </body>

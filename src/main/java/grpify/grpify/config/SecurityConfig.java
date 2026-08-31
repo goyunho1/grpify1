@@ -32,11 +32,12 @@ public class SecurityConfig {
                         // ✨ --- 정적 자원 경로 허용 추가 ---
                         .requestMatchers(
                                 "/",                  // 루트 경로
+                                "/index.html",        // 인덱스 페이지
                                 "/favicon.ico",       // 파비콘
                                 "/css/**",            // CSS 파일 경로
                                 "/js/**",             // JavaScript 파일 경로
                                 "/image/**",          // 이미지 파일 경로
-                                "/error",              // Spring Boot의 기본 에러 페이지
+                                "/error",             // Spring Boot의 기본 에러 페이지
                                 "/redirect.html",
                                 "/main.html",
                                 "/card.html"
